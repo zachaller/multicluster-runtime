@@ -28,7 +28,7 @@ ROOT_DIR=$(abspath .)
 #
 # Go.
 #
-GO_VERSION ?= 1.25.6
+GO_VERSION ?= 1.26.0
 
 # Use GOPROXY environment variable if set
 GOPROXY := $(shell go env GOPROXY)
@@ -174,7 +174,7 @@ clean-release: ## Remove the release folder.
 .PHONY: verify-modules
 verify-modules: modules $(GO_MOD_CHECK) ## Verify go modules are up to date.
 	  @for MOD in . $(TOOLS_DIR) $$(git ls-files '**/go.mod' | sed 's,/go.mod,,'); do \
-		pushd $$MOD >/dev/null; if !(git diff --quiet HEAD -- go.sum go.mod); then echo "[$$MOD] go modules are out of date, please run 'make modules'"; exit 1; fi; popd >/dev/null; \
+		pushd $$MOD >/dev/null; if !(git diff --quiet HEAD -- go.sum go.mod); then echo "[$$MOD] go.mod or go.sum differs from HEAD — commit them, or run 'make modules' if tidying is still needed"; exit 1; fi; popd >/dev/null; \
 	  done; \
 
 	$(GO_MOD_CHECK) $(GO_MOD_CHECK_IGNORE)
